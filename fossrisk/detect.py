@@ -3,9 +3,10 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from xml.etree import ElementTree
 
 from .model import Component, SBOMError
-from .parsers import spdx_json, spdx_tv
+from .parsers import cyclonedx_json, cyclonedx_xml, spdx_json, spdx_tv
 
 
 def load_sbom(path: str | Path) -> tuple[str, list[Component]]:
@@ -25,6 +26,8 @@ def load_sbom(path: str | Path) -> tuple[str, list[Component]]:
     try:
         if stripped.startswith(("{", "[")):
             return _from_json(text)
+        if stripped.startswith("<"):
+            return _from_xml(text)
         if stripped.startswith("SPDXVersion:") or "\nSPDXVersion:" in text:
             return "spdx-tv", spdx_tv.parse(text)
     except SBOMError as exc:
@@ -41,4 +44,16 @@ def _from_json(text: str) -> tuple[str, list[Component]]:
         raise SBOMError("JSON root must be an object")
     if "spdxVersion" in doc:
         return "spdx-json", spdx_json.parse(doc)
+    if doc.get("bomFormat") == "CycloneDX":
+        return "cyclonedx-json", cyclonedx_json.parse(doc)
     raise SBOMError("JSON is neither SPDX (no 'spdxVersion') nor CycloneDX (no 'bomFormat')")
+
+
+def _from_xml(text: str) -> tuple[str, list[Component]]:
+    try:
+        root = ElementTree.fromstring(text)
+    except ElementTree.ParseError as exc:
+        raise SBOMError(f"not valid XML ({exc})") from None
+    if root.tag.startswith("{http://cyclonedx.org/schema/bom/") and root.tag.endswith("}bom"):
+        return "cyclonedx-xml", cyclonedx_xml.parse(root)
+    raise SBOMError("XML is not a CycloneDX BOM")
