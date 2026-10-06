@@ -1,0 +1,32 @@
+## Document Information
+SPDXVersion: SPDX-2.3
+DataLicense: CC0-1.0
+SPDXID: SPDXRef-DOCUMENT
+DocumentName: demo-app
+DocumentNamespace: https://example.com/demo-app
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-root
+
+PackageName: demo-app
+SPDXID: SPDXRef-root
+PackageVersion: 1.0.0
+PackageLicenseConcluded: LicenseRef-Proprietary
+
+PackageName: lodash
+SPDXID: SPDXRef-lodash
+PackageVersion: 4.17.21
+PackageComment: <text>Bundled helper library.
+PackageLicenseConcluded: GPL-3.0-only
+</text>
+PackageLicenseConcluded: MIT
+PackageLicenseDeclared: MIT
+ExternalRef: PACKAGE-MANAGER purl pkg:npm/lodash@4.17.21
+
+PackageName: readline
+SPDXID: SPDXRef-readline
+PackageVersion: 8.2
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: GPL-3.0-or-later
+
+PackageName: mystery
+SPDXID: SPDXRef-mystery
+PackageVersion: 0.1
