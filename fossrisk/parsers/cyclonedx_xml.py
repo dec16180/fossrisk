@@ -22,6 +22,8 @@ def _walk(container: Element | None, q, out: list[Component]) -> None:
     if container is None:
         return
     for comp in container.findall(q("component")):
+        if comp.get("type") == "file":  # evidence files (e.g. Syft's METADATA/RECORD), not packages
+            continue
         found: list[tuple[str, str | None]] = []
         licenses = comp.find(q("licenses"))
         if licenses is not None:

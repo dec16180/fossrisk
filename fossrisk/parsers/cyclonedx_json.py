@@ -17,6 +17,8 @@ def _walk(components, out: list[Component]) -> None:
     for comp in components:
         if not isinstance(comp, dict):
             raise SBOMError("CycloneDX component entries must be objects")
+        if comp.get("type") == "file":  # evidence files (e.g. Syft's METADATA/RECORD), not packages
+            continue
         expression, source = cyclonedx_license(_licenses(comp.get("licenses") or []))
         out.append(Component(
             name=text(comp.get("name")) or "<unnamed>",

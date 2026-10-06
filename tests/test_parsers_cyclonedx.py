@@ -46,3 +46,21 @@ def test_non_string_scalars_are_coerced(tmp_path):
     path.write_text('{"bomFormat": "CycloneDX", "components": '
                     '[{"name": 7, "version": 2, "licenses": [{"license": {"id": "MIT"}}]}]}')
     assert load_sbom(path)[1] == [Component("7", "2", None, "MIT", "declared")]
+
+
+def test_file_components_are_skipped(tmp_path):
+    # Syft lists package metadata files (METADATA, RECORD, ...) as type "file".
+    json_path = tmp_path / "syft.json"
+    json_path.write_text('{"bomFormat": "CycloneDX", "components": ['
+                         '{"type": "file", "name": "/site-packages/x-1.0.dist-info/METADATA"},'
+                         '{"type": "library", "name": "x", "version": "1.0",'
+                         ' "licenses": [{"license": {"id": "MIT"}}]}]}')
+    xml_path = tmp_path / "syft.xml"
+    xml_path.write_text('<bom xmlns="http://cyclonedx.org/schema/bom/1.6"><components>'
+                        '<component type="file"><name>/site-packages/x-1.0.dist-info/RECORD</name></component>'
+                        '<component type="library"><name>x</name><version>1.0</version>'
+                        '<licenses><license><id>MIT</id></license></licenses></component>'
+                        '</components></bom>')
+    expected = [Component("x", "1.0", None, "MIT", "declared")]
+    assert load_sbom(json_path)[1] == expected
+    assert load_sbom(xml_path)[1] == expected
