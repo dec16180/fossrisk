@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bom xmlns="http://cyclonedx.org/schema/bom/1.6" version="1">
+  <metadata>
+    <component type="application"><name>demo-app</name><version>1.0.0</version></component>
+  </metadata>
+  <components>
+    <component type="library">
+      <name>lodash</name><version>4.17.21</version>
+      <licenses><license><id>MIT</id></license></licenses>
+      <purl>pkg:npm/lodash@4.17.21</purl>
+    </component>
+    <component type="library">
+      <name>jackson-databind</name><version>2.17.0</version>
+      <licenses><license><name>The Apache Software License, Version 2.0</name></license></licenses>
+      <purl>pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.17.0</purl>
+    </component>
+    <component type="library">
+      <name>dual</name><version>1.0</version>
+      <licenses><expression>MIT OR GPL-2.0-only</expression></licenses>
+    </component>
+    <component type="library">
+      <name>multi</name><version>2.0</version>
+      <licenses><license><id>MIT</id></license><license><id>BSD-3-Clause</id></license></licenses>
+    </component>
+    <component type="library">
+      <name>acked</name><version>3.0</version>
+      <licenses>
+        <license acknowledgement="declared"><id>GPL-3.0-only</id></license>
+        <license acknowledgement="concluded"><id>LGPL-2.1-only</id></license>
+      </licenses>
+    </component>
+    <component type="library">
+      <name>test-runner</name><version>9.0</version><scope>excluded</scope>
+      <licenses><license><id>GPL-3.0-only</id></license></licenses>
+      <components>
+        <component type="library"><name>nested-child</name><version>0.2</version></component>
+      </components>
+    </component>
+  </components>
+</bom>

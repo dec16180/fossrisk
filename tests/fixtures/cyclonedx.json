@@ -1,0 +1,26 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.6",
+  "version": 1,
+  "metadata": {
+    "component": {"type": "application", "name": "demo-app", "version": "1.0.0",
+                  "licenses": [{"license": {"name": "Proprietary"}}]}
+  },
+  "components": [
+    {"type": "library", "name": "lodash", "version": "4.17.21", "purl": "pkg:npm/lodash@4.17.21",
+     "licenses": [{"license": {"id": "MIT"}}]},
+    {"type": "library", "name": "jackson-databind", "version": "2.17.0",
+     "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.17.0",
+     "licenses": [{"license": {"name": "The Apache Software License, Version 2.0"}}]},
+    {"type": "library", "name": "dual", "version": "1.0",
+     "licenses": [{"expression": "MIT OR GPL-2.0-only"}]},
+    {"type": "library", "name": "multi", "version": "2.0",
+     "licenses": [{"license": {"id": "MIT"}}, {"license": {"id": "BSD-3-Clause"}}]},
+    {"type": "library", "name": "acked", "version": "3.0",
+     "licenses": [{"license": {"id": "GPL-3.0-only", "acknowledgement": "declared"}},
+                  {"license": {"id": "LGPL-2.1-only", "acknowledgement": "concluded"}}]},
+    {"type": "library", "name": "test-runner", "version": "9.0", "scope": "excluded",
+     "licenses": [{"license": {"id": "GPL-3.0-only"}}],
+     "components": [{"type": "library", "name": "nested-child", "version": "0.2"}]}
+  ]
+}
