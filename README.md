@@ -8,10 +8,22 @@ Claude only explains and triages them. Nothing here is legal advice.
 
 ## Install
 
+As a global command (recommended; editable, so code changes apply immediately):
+
+```bash
+pipx install --editable /path/to/fossrisk
+fossrisk --version
+```
+
+For development:
+
 ```bash
 python3 -m venv .venv
-.venv/bin/pip install -e .
+.venv/bin/pip install -e '.[dev]'
+.venv/bin/pytest
 ```
+
+`python -m fossrisk ...` works as well.
 
 ## Usage
 

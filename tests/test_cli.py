@@ -124,3 +124,15 @@ def test_unexpected_error_exits_2_without_traceback(capsys, fixtures, monkeypatc
     assert code == 2
     assert err.startswith("fossrisk: error: unexpected RuntimeError: boom")
     assert "Traceback" not in err
+
+
+def test_python_dash_m_entry_point(fixtures):
+    import subprocess
+    import sys
+    from fossrisk import __version__
+    version = subprocess.run([sys.executable, "-m", "fossrisk", "--version"],
+                             capture_output=True, text=True)
+    assert (version.returncode, version.stdout.strip()) == (0, f"fossrisk {__version__}")
+    result = subprocess.run([sys.executable, "-m", "fossrisk", "analyze", str(fixtures / "spdx.json")],
+                            capture_output=True, text=True)
+    assert result.returncode == 1 and "readline" in result.stdout
