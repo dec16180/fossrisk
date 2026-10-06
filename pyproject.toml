@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fossrisk"
+version = "0.1.0"
+description = "SBOM license compliance checker with Claude MCP integration"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "mcp>=2.3,<3",
+    "license-expression>=30.4",
+    "pyyaml>=6",
+    "rich>=13",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.scripts]
+fossrisk = "fossrisk.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["fossrisk*"]
+
+[tool.setuptools.package-data]
+fossrisk = ["data/*.yaml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
