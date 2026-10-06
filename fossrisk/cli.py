@@ -38,6 +38,8 @@ def build_parser() -> argparse.ArgumentParser:
     e = sub.add_parser("explain", help="classify a license id or SPDX expression")
     e.add_argument("expression")
     e.add_argument("--policy", help="policy YAML file (default: built-in policy)")
+
+    sub.add_parser("mcp", help="run the MCP server on stdio (for Claude Code / Claude Desktop)")
     return parser
 
 
@@ -46,7 +48,11 @@ def main(argv: list[str] | None = None) -> int:
     try:
         if args.command == "analyze":
             return _analyze(args)
-        return _explain(args)
+        if args.command == "explain":
+            return _explain(args)
+        from . import mcp_server  # imported lazily: keeps the other commands fast
+        mcp_server.run()
+        return EXIT_OK
     except (SBOMError, PolicyError, LicenseParseError, OSError) as exc:
         if args.debug:
             raise

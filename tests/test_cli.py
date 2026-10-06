@@ -98,3 +98,11 @@ def test_ai_unavailable_exit_3(capsys, fixtures, monkeypatch):
     assert code == 3
     assert "readline" in out
     assert "AI review unavailable: claude exited with code 1" in err
+
+
+def test_mcp_subcommand_runs_server(monkeypatch):
+    import fossrisk.mcp_server
+    called = []
+    monkeypatch.setattr(fossrisk.mcp_server, "run", lambda: called.append(True))
+    assert cli.main(["mcp"]) == 0
+    assert called == [True]
