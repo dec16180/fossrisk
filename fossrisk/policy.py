@@ -57,7 +57,13 @@ def _rule_key(entry: str, path: Path) -> str:
         node = None
     if not isinstance(node, Lic):
         raise PolicyError(f"policy {path}: {entry!r} is neither a category nor a license id")
-    return classify(node).id
+    return _license_key(node)
+
+
+def _license_key(lic: Lic) -> str:
+    """Rule key for a license: canonical id, plus the exception when there is one."""
+    base = classify(Lic(lic.id)).id
+    return f"{base} WITH {lic.exception}" if lic.exception else base
 
 
 def load_policy(path: str | Path) -> Policy:
@@ -121,8 +127,11 @@ def _union(lists) -> list[str]:
 def evaluate_expression(node: Node, policy: Policy) -> Evaluation:
     if isinstance(node, Lic):
         info = classify(node)
-        if info.id in policy.rules:
-            decision, rule = policy.rules[info.id], f"license:{info.id}"
+        # Most specific first: "id WITH exception", then the base id, then the category.
+        for key in dict.fromkeys((_license_key(node), info.id)):
+            if key in policy.rules:
+                decision, rule = policy.rules[key], f"license:{key}"
+                break
         else:
             decision, rule = policy.rules.get(info.category, "review"), f"category:{info.category}"
         return Evaluation(decision, [info.category], [render(node)], list(info.obligations),

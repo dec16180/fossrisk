@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from ..model import Component, SBOMError
-from .common import cyclonedx_license
+from .common import cyclonedx_license, text
 
 
 def parse(doc: dict) -> list[Component]:
@@ -19,12 +19,12 @@ def _walk(components, out: list[Component]) -> None:
             raise SBOMError("CycloneDX component entries must be objects")
         expression, source = cyclonedx_license(_licenses(comp.get("licenses") or []))
         out.append(Component(
-            name=str(comp.get("name") or "<unnamed>"),
-            version=comp.get("version"),
-            purl=comp.get("purl"),
+            name=text(comp.get("name")) or "<unnamed>",
+            version=text(comp.get("version")),
+            purl=text(comp.get("purl")),
             license_expression=expression,
             license_source=source,
-            scope=comp.get("scope"),
+            scope=text(comp.get("scope")),
         ))
         _walk(comp.get("components") or [], out)
 

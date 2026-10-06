@@ -73,3 +73,18 @@ def test_exception_relaxes_copyleft_only():
     assert classify(Lic("GPL-2.0-only", "Classpath-exception-2.0")).category == "weak-copyleft"
     assert classify(Lic("Apache-2.0", "LLVM-exception")).category == "permissive"
     assert classify(Lic("GPL-2.0-only", "Made-up-exception")).category == "strong-copyleft"
+
+
+@pytest.mark.parametrize("text", ["LicenseRef-acme or later", "MIT Or Apache-2.0", "MIT and ISC"])
+def test_non_uppercase_operators_are_rejected(text):
+    with pytest.raises(LicenseParseError, match="uppercase"):
+        parse(text)
+
+
+def test_free_text_or_later_aliases():
+    assert parse("GPLv2 or later") == Lic("GPL-2.0-or-later")
+
+
+def test_deprecated_with_ids_expand_inside_expressions():
+    assert parse("MIT OR GPL-2.0-with-classpath-exception") == Or(
+        (Lic("MIT"), Lic("GPL-2.0-only", "Classpath-exception-2.0")))

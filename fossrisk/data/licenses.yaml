@@ -46,6 +46,10 @@ licenses:
   MS-RL: {category: weak-copyleft, obligations: [attribution, include-license-text, disclose-source, same-license]}
   OFL-1.1: {category: weak-copyleft, obligations: [include-license-text, same-license]}
   # --- strong copyleft ---
+  GPL-1.0-only: {category: strong-copyleft, obligations: [attribution, include-license-text, state-changes, disclose-source, same-license]}
+  GPL-1.0-or-later: {category: strong-copyleft, obligations: [attribution, include-license-text, state-changes, disclose-source, same-license]}
+  EUPL-1.0: {category: strong-copyleft, obligations: [attribution, include-license-text, state-changes, disclose-source, same-license]}
+  CC-BY-SA-2.0: {category: strong-copyleft, obligations: [attribution, state-changes, same-license]}
   GPL-2.0-only: {category: strong-copyleft, obligations: [attribution, include-license-text, state-changes, disclose-source, same-license]}
   GPL-2.0-or-later: {category: strong-copyleft, obligations: [attribution, include-license-text, state-changes, disclose-source, same-license]}
   GPL-3.0-only: {category: strong-copyleft, obligations: [attribution, include-license-text, state-changes, disclose-source, same-license]}
@@ -56,12 +60,20 @@ licenses:
   CC-BY-SA-4.0: {category: strong-copyleft, obligations: [attribution, state-changes, same-license]}
   Sleepycat: {category: strong-copyleft, obligations: [attribution, include-license-text, disclose-source]}
   # --- network copyleft ---
+  AGPL-1.0-only: {category: network-copyleft, obligations: [attribution, include-license-text, state-changes, disclose-source, same-license, network-disclosure]}
+  AGPL-1.0-or-later: {category: network-copyleft, obligations: [attribution, include-license-text, state-changes, disclose-source, same-license, network-disclosure]}
+  OSL-2.0: {category: network-copyleft, obligations: [attribution, include-license-text, disclose-source, same-license, network-disclosure]}
+  OSL-2.1: {category: network-copyleft, obligations: [attribution, include-license-text, disclose-source, same-license, network-disclosure]}
   AGPL-3.0-only: {category: network-copyleft, obligations: [attribution, include-license-text, state-changes, disclose-source, same-license, network-disclosure]}
   AGPL-3.0-or-later: {category: network-copyleft, obligations: [attribution, include-license-text, state-changes, disclose-source, same-license, network-disclosure]}
   OSL-3.0: {category: network-copyleft, obligations: [attribution, include-license-text, disclose-source, same-license, network-disclosure]}
   RPL-1.5: {category: network-copyleft, obligations: [attribution, include-license-text, disclose-source, same-license, network-disclosure]}
   SSPL-1.0: {category: network-copyleft, obligations: [attribution, include-license-text, disclose-source, same-license, network-disclosure]}
   # --- non-commercial or otherwise use-restricted ---
+  CC-BY-NC-2.0: {category: non-commercial, obligations: [attribution]}
+  CC-BY-NC-SA-2.0: {category: non-commercial, obligations: [attribution, same-license]}
+  CC-BY-NC-SA-3.0: {category: non-commercial, obligations: [attribution, same-license]}
+  CC-BY-NC-ND-3.0: {category: non-commercial, obligations: [attribution]}
   CC-BY-NC-3.0: {category: non-commercial, obligations: [attribution]}
   CC-BY-NC-4.0: {category: non-commercial, obligations: [attribution]}
   CC-BY-NC-SA-4.0: {category: non-commercial, obligations: [attribution, same-license]}
@@ -129,3 +141,31 @@ aliases:
   "Public Domain": LicenseRef-Public-Domain
   "Proprietary": LicenseRef-Proprietary
   "Commercial": LicenseRef-Proprietary
+  "GPL-2.0 or later": GPL-2.0-or-later
+  "GPLv2 or later": GPL-2.0-or-later
+  "GPL-3.0 or later": GPL-3.0-or-later
+  "GPLv3 or later": GPL-3.0-or-later
+  "LGPL": LGPL-2.0-or-later
+  "AGPL": AGPL-1.0-or-later
+  "GNU General Public License v2.0": GPL-2.0-only
+  "GNU General Public License v3.0": GPL-3.0-only
+  "GNU General Public License, version 2": GPL-2.0-only
+  "GNU General Public License, version 3": GPL-3.0-only
+  "GNU Lesser General Public License v2.1": LGPL-2.1-only
+  "GNU Lesser General Public License v3.0": LGPL-3.0-only
+  "GNU Affero General Public License v3.0": AGPL-3.0-only
+  "Mozilla Public License 1.1": MPL-1.1
+  "Common Development and Distribution License 1.0": CDDL-1.0
+  "SSPL": SSPL-1.0
+  "Server Side Public License": SSPL-1.0
+  "Server Side Public License, v 1": SSPL-1.0
+  "BUSL": BUSL-1.1
+  "Business Source License 1.1": BUSL-1.1
+  "Elastic License 2.0": Elastic-2.0
+  # deprecated SPDX ids that embed an exception
+  "GPL-2.0-with-classpath-exception": GPL-2.0-only WITH Classpath-exception-2.0
+  "GPL-3.0-with-GCC-exception": GPL-3.0-only WITH GCC-exception-3.1
+  "GPL-2.0-with-autoconf-exception": GPL-2.0-only WITH Autoconf-exception-2.0
+  "GPL-3.0-with-autoconf-exception": GPL-3.0-only WITH Autoconf-exception-3.0
+  "GPL-2.0-with-bison-exception": GPL-2.0-only WITH Bison-exception-2.2
+  "GPL-2.0-with-font-exception": GPL-2.0-only WITH Font-exception-2.0

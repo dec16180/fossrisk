@@ -58,6 +58,12 @@ def main(argv: list[str] | None = None) -> int:
             raise
         print(f"fossrisk: error: {exc}", file=sys.stderr)
         return EXIT_INPUT
+    except Exception as exc:  # never let a crash look like a policy failure (exit 1)
+        if args.debug:
+            raise
+        print(f"fossrisk: error: unexpected {type(exc).__name__}: {exc} "
+              "(run with --debug for a traceback)", file=sys.stderr)
+        return EXIT_INPUT
 
 
 def _policy(path: str | None) -> Policy:
@@ -66,6 +72,8 @@ def _policy(path: str | None) -> Policy:
 
 def _analyze(args: argparse.Namespace) -> int:
     report = analyze(args.sbom, _policy(args.policy))
+    if not report.findings:
+        print(f"fossrisk: warning: no components found in {args.sbom}", file=sys.stderr)
 
     ai_text = ai_error = None
     if args.ai:

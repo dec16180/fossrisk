@@ -106,3 +106,21 @@ def test_mcp_subcommand_runs_server(monkeypatch):
     monkeypatch.setattr(fossrisk.mcp_server, "run", lambda: called.append(True))
     assert cli.main(["mcp"]) == 0
     assert called == [True]
+
+
+def test_empty_sbom_warns(capsys, tmp_path):
+    path = tmp_path / "empty.json"
+    path.write_text('{"spdxVersion": "SPDX-2.3", "packages": []}')
+    code, _, err = run(capsys, "analyze", str(path))
+    assert code == 0
+    assert "warning: no components found" in err
+
+
+def test_unexpected_error_exits_2_without_traceback(capsys, fixtures, monkeypatch):
+    def broken(*args, **kwargs):
+        raise RuntimeError("boom")
+    monkeypatch.setattr(cli, "analyze", broken)
+    code, _, err = run(capsys, "analyze", str(fixtures / "spdx.json"))
+    assert code == 2
+    assert err.startswith("fossrisk: error: unexpected RuntimeError: boom")
+    assert "Traceback" not in err

@@ -122,3 +122,35 @@ def test_invalid_policies(tmp_path, text, message):
 def test_missing_policy_file(tmp_path):
     with pytest.raises(PolicyError, match="cannot read policy"):
         load_policy(tmp_path / "nope.yaml")
+
+
+def test_with_rule_does_not_allow_the_bare_license(tmp_path):
+    policy = write_policy(tmp_path, 'allow: ["GPL-2.0-only WITH Classpath-exception-2.0"]\n')
+    assert finding("GPL-2.0-only", policy).decision == "deny"
+    f = finding("GPL-2.0-only WITH Classpath-exception-2.0", policy)
+    assert (f.decision, f.matched_rule) == ("allow", "license:GPL-2.0-only WITH Classpath-exception-2.0")
+
+
+def test_base_license_rule_still_covers_with_variant(tmp_path):
+    policy = write_policy(tmp_path, "allow: [GPL-2.0-only]\n")
+    assert finding("GPL-2.0-only WITH Classpath-exception-2.0", policy).decision == "allow"
+
+
+@pytest.mark.parametrize("name,decision", [
+    ("GPL", "deny"),
+    ("GPL-1.0-only", "deny"),
+    ("AGPL", "deny"),
+    ("LGPL", "review"),
+    ("GNU General Public License v2.0", "deny"),
+    ("GNU Lesser General Public License v2.1", "review"),
+    ("SSPL", "deny"),
+    ("Server Side Public License", "deny"),
+    ("Business Source License 1.1", "deny"),
+    ("CC-BY-NC-SA-3.0", "deny"),
+    ("CC-BY-SA-2.0", "deny"),
+    ("EUPL-1.0", "deny"),
+    ("OSL-2.1", "deny"),
+    ("GPL-2.0-with-classpath-exception", "review"),
+])
+def test_common_copyleft_and_restricted_names_are_known(name, decision):
+    assert finding(name).decision == decision

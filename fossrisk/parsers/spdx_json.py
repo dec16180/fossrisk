@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from ..model import Component, SBOMError
-from .common import pick_license
+from .common import drop_product_roots, pick_license, text
 
 
 def parse(doc: dict) -> list[Component]:
@@ -18,21 +18,19 @@ def parse(doc: dict) -> list[Component]:
                 and rel.get("spdxElementId") == document_id):
             roots.add(rel.get("relatedSpdxElement"))
 
-    components = []
+    items = []
     for pkg in packages:
         if not isinstance(pkg, dict):
             raise SBOMError("SPDX package entries must be objects")
-        if pkg.get("SPDXID") in roots:
-            continue
         expression, source = pick_license(pkg.get("licenseConcluded"), pkg.get("licenseDeclared"))
-        components.append(Component(
+        items.append((Component(
             name=str(pkg.get("name") or pkg.get("SPDXID") or "<unnamed>"),
-            version=pkg.get("versionInfo"),
-            purl=_purl(pkg.get("externalRefs") or []),
+            version=text(pkg.get("versionInfo")),
+            purl=text(_purl(pkg.get("externalRefs") or [])),
             license_expression=expression,
             license_source=source,
-        ))
-    return components
+        ), pkg.get("SPDXID") in roots))
+    return drop_product_roots(items)
 
 
 def _purl(refs: list) -> str | None:

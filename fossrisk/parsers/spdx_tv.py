@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from ..model import Component
-from .common import pick_license
+from .common import drop_product_roots, pick_license
 
 
 def parse(text: str) -> list[Component]:
@@ -37,17 +37,15 @@ def parse(text: str) -> list[Component]:
             else:
                 current.setdefault(tag, value)
 
-    components = []
+    items = []
     for pkg in packages:
-        if pkg.get("SPDXID") in roots:
-            continue
         expression, source = pick_license(pkg.get("PackageLicenseConcluded"),
                                           pkg.get("PackageLicenseDeclared"))
-        components.append(Component(
+        items.append((Component(
             name=pkg["name"],
             version=pkg.get("PackageVersion"),
             purl=pkg.get("purl"),
             license_expression=expression,
             license_source=source,
-        ))
-    return components
+        ), pkg.get("SPDXID") in roots))
+    return drop_product_roots(items)

@@ -12,6 +12,9 @@ from license_expression import ExpressionError, LicenseWithExceptionSymbol, get_
 CATEGORIES = ("public-domain", "permissive", "weak-copyleft", "strong-copyleft",
               "network-copyleft", "non-commercial", "proprietary", "unknown")
 COPYLEFT = {"weak-copyleft", "strong-copyleft", "network-copyleft"}
+# SPDX operators must be uppercase; the parser library would also accept "or"
+# inside free-text names such as "GPL-2.0 or later" and silently split them.
+_OPERATOR = re.compile(r"(?<!\S)(and|or|with)(?!\S)", re.IGNORECASE)
 
 
 class LicenseParseError(ValueError):
@@ -74,6 +77,10 @@ def parse(expression: str) -> Node:
     text = normalize(expression)
     if not text:
         raise LicenseParseError("empty license expression")
+    for match in _OPERATOR.finditer(text):
+        if match.group() != match.group().upper():
+            raise LicenseParseError(f"cannot parse license expression {expression!r}: "
+                                    f"operator {match.group()!r} must be uppercase")
     try:
         parsed = _licensing().parse(text, validate=False)
     except ExpressionError as exc:
@@ -91,7 +98,11 @@ def _convert(expr) -> Node:
         return Or(tuple(_convert(arg) for arg in expr.args))
     if isinstance(expr, LicenseWithExceptionSymbol):
         return Lic(normalize(expr.license_symbol.key), expr.exception_symbol.key)
-    return Lic(normalize(expr.key))
+    name = normalize(expr.key)
+    if " WITH " in name:  # alias of a deprecated id such as GPL-2.0-with-classpath-exception
+        base, exception = name.split(" WITH ", 1)
+        return Lic(base, exception)
+    return Lic(name)
 
 
 def render(node: Node) -> str:

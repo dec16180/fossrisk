@@ -49,3 +49,14 @@ def test_explain():
 def test_explain_invalid():
     with pytest.raises(LicenseParseError):
         explain("(MIT")
+
+
+@pytest.mark.parametrize("entries", [
+    [{"license": {"id": "AGPL-3.0-only"}}, {"license": {"name": "Commercial, see LICENSE"}}],
+    [{"license": {"id": "GPL-3.0-only"}}, {"license": {"name": "MIT/X11"}}],
+])
+def test_unparseable_entry_does_not_hide_copyleft(tmp_path, entries):
+    path = tmp_path / "bom.json"
+    path.write_text(json.dumps({"bomFormat": "CycloneDX",
+                                "components": [{"name": "x", "licenses": entries}]}))
+    assert analyze(path).findings[0].decision == "deny"

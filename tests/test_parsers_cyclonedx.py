@@ -39,3 +39,10 @@ def test_cyclonedx_errors(tmp_path, content, message):
     path.write_text(content)
     with pytest.raises(SBOMError, match=message):
         load_sbom(path)
+
+
+def test_non_string_scalars_are_coerced(tmp_path):
+    path = tmp_path / "num.json"
+    path.write_text('{"bomFormat": "CycloneDX", "components": '
+                    '[{"name": 7, "version": 2, "licenses": [{"license": {"id": "MIT"}}]}]}')
+    assert load_sbom(path)[1] == [Component("7", "2", None, "MIT", "declared")]

@@ -59,3 +59,40 @@ def test_load_errors(tmp_path, content, message):
 def test_missing_file(tmp_path):
     with pytest.raises(SBOMError, match="file not found"):
         load_sbom(tmp_path / "missing.json")
+
+
+def _write_spdx(tmp_path, packages, describes):
+    import json
+    path = tmp_path / "doc.spdx.json"
+    path.write_text(json.dumps({"spdxVersion": "SPDX-2.3", "SPDXID": "SPDXRef-DOCUMENT",
+                                "packages": packages, "documentDescribes": describes}))
+    return path
+
+
+def test_single_described_package_is_kept(tmp_path):
+    path = _write_spdx(tmp_path, [{"SPDXID": "SPDXRef-lib", "name": "vendorlib",
+                                   "licenseConcluded": "GPL-3.0-only"}], ["SPDXRef-lib"])
+    assert [c.name for c in load_sbom(path)[1]] == ["vendorlib"]
+
+
+def test_all_described_packages_are_kept_when_nothing_else_exists(tmp_path):
+    path = _write_spdx(tmp_path, [
+        {"SPDXID": "SPDXRef-a", "name": "a", "licenseConcluded": "GPL-3.0-only"},
+        {"SPDXID": "SPDXRef-b", "name": "b", "licenseConcluded": "AGPL-3.0-only"},
+    ], ["SPDXRef-a", "SPDXRef-b"])
+    assert [c.name for c in load_sbom(path)[1]] == ["a", "b"]
+
+
+def test_open_source_root_with_dependencies_is_kept(tmp_path):
+    path = _write_spdx(tmp_path, [
+        {"SPDXID": "SPDXRef-root", "name": "vendorlib", "licenseConcluded": "GPL-3.0-only"},
+        {"SPDXID": "SPDXRef-dep", "name": "dep", "licenseConcluded": "MIT"},
+    ], ["SPDXRef-root"])
+    assert [c.name for c in load_sbom(path)[1]] == ["vendorlib", "dep"]
+
+
+def test_tag_value_single_described_package_is_kept(tmp_path):
+    path = tmp_path / "single.spdx"
+    path.write_text("SPDXVersion: SPDX-2.3\nRelationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-lib\n\n"
+                    "PackageName: vendorlib\nSPDXID: SPDXRef-lib\nPackageLicenseConcluded: GPL-3.0-only\n")
+    assert [c.name for c in load_sbom(path)[1]] == ["vendorlib"]
