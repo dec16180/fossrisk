@@ -99,3 +99,7 @@ release, and what are my options for each?"*
 `claude -p` with all tools disabled and appends the answer under
 "AI review (not legal advice)". In CI, set `ANTHROPIC_API_KEY` for `claude`, or rely
 on the deterministic exit code alone.
+
+## License
+
+Apache-2.0. See [LICENSE](LICENSE).
